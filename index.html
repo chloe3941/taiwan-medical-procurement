@@ -1,84 +1,17 @@
 <!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="臺灣醫院醫療器材採購資訊追蹤與歷史資料庫，彙整部立醫院、公立醫院及醫學中心公開採購公告。">
-  <title>臺灣醫院醫療器材採購資料庫｜臺灣醫材公會</title>
-  <style>
-    :root{--navy:#12304a;--blue:#176b87;--teal:#1a8b83;--ink:#203244;--muted:#687989;--line:#dce5eb;--bg:#f3f6f8;--white:#fff;--amber:#a96b13}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif;line-height:1.6}
-    header{background:linear-gradient(120deg,#102d46,#17627b);color:#fff;padding:34px max(22px,calc((100% - 1180px)/2)) 30px}
-    .eyebrow{font-size:12px;letter-spacing:.12em;opacity:.8}.brand{font-size:13px;opacity:.86;margin-top:5px}
-    h1{font-size:clamp(25px,4vw,36px);line-height:1.25;margin:13px 0 8px}.intro{max-width:760px;color:#e2edf2;margin:0;font-size:14px}
-    main{max-width:1180px;margin:26px auto;padding:0 20px 50px}
-    .toolbar,.panel,.stat{background:var(--white);border:1px solid var(--line);border-radius:13px}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{padding:16px 18px}.stat small{color:var(--muted);display:block}.stat strong{font-size:27px;color:var(--navy);font-weight:700}
-    .toolbar{padding:16px;margin-bottom:18px;display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
-    input,select{width:100%;border:1px solid #cbd7df;border-radius:8px;padding:11px 12px;background:#fff;color:var(--ink);font:inherit}
-    .section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:24px 0 12px}.section-head h2{font-size:19px;margin:0;color:var(--navy)}.section-head span{font-size:12px;color:var(--muted)}
-    .panel{overflow:hidden}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:850px;font-size:13px}th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f7fafb;color:#536779;font-weight:650;white-space:nowrap}tbody tr:last-child td{border-bottom:0}
-    .tag{display:inline-block;border-radius:30px;padding:2px 9px;font-size:11px;background:#eaf2f6;color:#315a70;white-space:nowrap}.tag.open{background:#e6f5ef;color:#18704d}.tag.pending{background:#fff3df;color:#946014}
-    a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}.empty{padding:34px 18px;text-align:center;color:var(--muted)}
-    .note{font-size:12px;color:var(--muted);margin:13px 2px}.sources{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.source{padding:16px;border:1px solid var(--line);border-radius:11px;background:#fff}.source strong{display:block;color:var(--navy);margin-bottom:5px}.source p{font-size:12px;color:var(--muted);margin:0 0 8px}
-    footer{border-top:1px solid var(--line);padding:20px;text-align:center;color:var(--muted);font-size:12px}
-    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr}.sources{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}}
-  </style>
-</head>
-<body>
-<header>
-  <div class="eyebrow">MEDICAL DEVICE PROCUREMENT INTELLIGENCE</div>
-  <div class="brand">臺灣醫材公會｜產業採購情報</div>
-  <h1>臺灣醫院醫療器材採購資料庫</h1>
-  <p class="intro">追蹤部立醫院、公立醫院及醫學中心公開採購資訊，逐步建置招標動態、決標結果與歷史聯標紀錄，協助會員掌握市場機會。</p>
-</header>
-<main>
-  <div class="stats">
-    <div class="stat"><small>資料庫案件</small><strong id="total">—</strong></div>
-    <div class="stat"><small>招標中</small><strong id="open">—</strong></div>
-    <div class="stat"><small>即將截止（7日內）</small><strong id="closing">—</strong></div>
-    <div class="stat"><small>已完成官方核實</small><strong id="verified">—</strong></div>
-  </div>
-  <section class="toolbar" aria-label="案件篩選">
-    <input id="q" type="search" placeholder="搜尋醫院、標案名稱、案號或關鍵字">
-    <select id="status"><option value="">所有案件狀態</option><option>招標中</option><option>即將截止</option><option>已決標</option><option>流標</option><option>更正公告</option><option>重新招標</option><option>待確認</option></select>
-    <select id="type"><option value="">所有醫院類型</option><option>部立醫院</option><option>公立醫院</option><option>醫學中心</option><option>其他</option></select>
-  </section>
-  <div class="section-head"><h2>最新採購公告</h2><span id="updated">資料更新日期：讀取中</span></div>
-  <section class="panel"><div class="table-wrap"><table>
-    <thead><tr><th>公告日期</th><th>醫院／機關</th><th>醫院類型</th><th>標案名稱／案號</th><th>預算金額</th><th>招標方式</th><th>投標截止</th><th>狀態</th><th>核實狀態／來源</th></tr></thead>
-    <tbody id="rows"><tr><td colspan="9" class="empty">正在載入資料…</td></tr></tbody>
-  </table></div></section>
-  <p class="note">資料原則：以政府電子採購網及醫院官方採購公告為優先來源。只有完成原始公告或附件查核的案件才標示「已核實」；資料未完整者標示「待確認」。本頁不取代各機關正式公告。</p>
-  <div class="section-head"><h2>資料範圍與官方來源</h2><span>以公開資訊為基礎，持續擴充</span></div>
-  <div class="sources">
-    <div class="source"><strong>政府電子採購網</strong><p>政府機關採購公告、招標文件、決標公告及更正資訊。</p><a href="https://web.pcc.gov.tw/" target="_blank" rel="noopener">前往官方網站 ↗</a></div>
-    <div class="source"><strong>衛生福利部所屬醫院</strong><p>部立醫院採購公告及聯合採購相關資訊。</p><a href="https://www.mohw.gov.tw/" target="_blank" rel="noopener">前往衛福部網站 ↗</a></div>
-    <div class="source"><strong>醫學中心／公立醫院</strong><p>依各醫院官方採購專區公告查核，逐步納入歷史資料。</p><span class="tag">逐案核實</span></div>
-  </div>
-  <div class="section-head"><h2>歷史資料庫</h2><span>近三年部立醫院聯標及醫學中心採購紀錄建置中</span></div>
-  <section class="panel"><div class="empty">歷史資料將依官方招標、決標公告逐案整理。尚未完成查核的歷史案件不會列為正式紀錄。</div></section>
-</main>
-<footer>臺灣醫材公會｜採購資訊彙整與產業服務</footer>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="臺灣醫院醫療器材採購資訊追蹤與歷史資料庫"><title>臺灣醫院醫材採購情報平台</title>
+<style>
+:root{--ink:#17324d;--muted:#657789;--line:#dce5ec;--blue:#176b87;--bg:#f5f8fa}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#203449;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;line-height:1.55}header{background:linear-gradient(120deg,#12334d,#176b87);color:white;padding:34px max(22px,calc((100% - 1180px)/2))}header small{letter-spacing:.12em;opacity:.8}h1{font-size:clamp(24px,4vw,36px);margin:8px 0}header p{margin:0;color:#dceaf0}main,footer{max-width:1180px;margin:24px auto;padding:0 18px}.notice,.panel,.card{background:white;border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}.notice{background:#fff8e9;border-color:#f0dfb8;color:#73511d;font-size:14px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{font-size:28px;font-weight:700;color:var(--ink)}.metric-label{font-size:13px;color:var(--muted)}h2{font-size:18px;margin:0 0 14px;color:var(--ink)}.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px}input,select{width:100%;padding:10px;border:1px solid #cbd7e0;border-radius:8px;background:white;font:inherit}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:850px;font-size:14px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f3f7f9;color:#52687a;white-space:nowrap}.pill{display:inline-block;padding:3px 8px;border-radius:99px;background:#edf2f5;color:#506474;font-size:12px;white-space:nowrap}.ok{background:#e8f4ee;color:#287653}.wait{background:#fff3df;color:#9a6414}a{color:#126b8a}.empty{text-align:center;padding:32px;color:var(--muted)}footer{color:var(--muted);font-size:12px;padding-bottom:35px}@media(max-width:760px){.cards{grid-template-columns:repeat(2,1fr)}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}}@media(max-width:430px){.filters{grid-template-columns:1fr}.filters input{grid-column:auto}}
+</style></head><body>
+<header><small>TMBIA · PROCUREMENT INTELLIGENCE</small><h1>臺灣醫院醫材採購情報平台</h1><p>醫院公開招標追蹤｜部立醫院聯合採購歷史｜醫學中心採購機會</p></header>
+<main><div class="notice"><strong>資料品質說明：</strong>本平台以政府及醫院官方公告為準。案件須完成原始公告核對後才標示「已核實」；尚未查證資料標示「待確認」。目前尚未匯入經逐案核實的採購案件。</div>
+<section class="cards"><div class="card"><div class="metric" id="total">—</div><div class="metric-label">資料庫案件</div></div><div class="card"><div class="metric" id="open">—</div><div class="metric-label">招標中</div></div><div class="card"><div class="metric" id="closing">—</div><div class="metric-label">即將截止（7日內）</div></div><div class="card"><div class="metric" id="verified">—</div><div class="metric-label">已核實案件</div></div></section>
+<section class="panel"><h2>採購案件查詢</h2><div class="filters"><input id="q" type="search" placeholder="搜尋醫院、標案名稱、案號或廠商"><select id="hospital"><option value="">全部醫院</option></select><select id="status"><option value="">全部狀態</option><option>招標中</option><option>即將截止</option><option>已決標</option><option>流標</option><option>更正公告</option><option>待確認</option></select><select id="verifiedFilter"><option value="">全部核實狀態</option><option value="true">已核實</option><option value="false">待確認</option></select></div></section>
+<section class="panel"><h2>採購案件清單</h2><div class="table-wrap"><table><thead><tr><th>公告日期</th><th>醫院／機關</th><th>標案名稱／案號</th><th>預算金額</th><th>招標方式</th><th>截止時間</th><th>狀態</th><th>核實</th><th>官方來源</th></tr></thead><tbody id="rows"><tr><td colspan="9" class="empty">正在讀取資料…</td></tr></tbody></table></div></section>
+<section class="panel"><h2>資料範圍與更新原則</h2><ul><li><strong>招標資訊：</strong>政府電子採購網、部立醫院及醫學中心官方採購公告。</li><li><strong>歷史資料：</strong>近三年部立醫院聯合採購投標、決標紀錄；後續逐步擴充醫學中心。</li><li><strong>資料欄位：</strong>公告日期、機關、標案名稱及案號、預算、招標方式、截止時間、狀態、決標資訊及官方連結。</li><li><strong>查證原則：</strong>以原始公告及附件核對；來源無法確認或欄位未公告時，標示「待確認」或「未公告」。</li></ul><p style="font-size:13px;color:#657789">資料更新時間：<span id="updated">尚無資料</span>。投標資格、規格及截止時間請以招標機關最新公告為準。</p></section></main><footer>臺灣醫材公會｜臺灣醫院醫材採購情報平台</footer>
 <script>
-(async function(){
- const $=id=>document.getElementById(id); let records=[];
- const fmt=v=>v===null||v===undefined||v===""?"—":v;
- const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
- function daysTo(v){if(!v)return Infinity;const d=new Date(v);return isNaN(d)?Infinity:Math.ceil((d-new Date())/86400000)}
- function render(){
-  const q=$("q").value.trim().toLowerCase(),s=$("status").value,t=$("type").value;
-  const filtered=records.filter(r=>(!q||[r.hospital,r.title,r.case_number,r.category].join(" ").toLowerCase().includes(q))&&(!s||r.status===s)&&(!t||r.hospital_type===t));
-  $("rows").innerHTML=filtered.length?filtered.map(r=>'<tr><td>'+esc(fmt(r.announcement_date))+'</td><td>'+esc(fmt(r.hospital))+'</td><td>'+esc(fmt(r.hospital_type))+'</td><td><strong>'+esc(fmt(r.title))+'</strong><br><span style="color:#718392">'+esc(fmt(r.case_number))+'</span></td><td>'+esc(fmt(r.budget))+'</td><td>'+esc(fmt(r.method))+'</td><td>'+esc(fmt(r.deadline))+'</td><td><span class="tag '+(r.status==="招標中"?"open":r.status==="待確認"?"pending":"")+'">'+esc(fmt(r.status))+'</span></td><td><span class="tag '+(r.verification==="已核實"?"open":"pending")+'">'+esc(fmt(r.verification))+'</span><br>'+(r.source_url?'<a href="'+esc(r.source_url)+'" target="_blank" rel="noopener">官方公告 ↗</a>':'—')+'</td></tr>').join(""):'<tr><td colspan="9" class="empty">目前沒有符合條件的案件。資料尚未匯入或請調整搜尋條件。</td></tr>';
- }
- try{
-  const res=await fetch("./data/tenders.json",{cache:"no-store"});if(!res.ok)throw new Error("資料讀取失敗");const data=await res.json();records=Array.isArray(data.records)?data.records:[];
-  $("updated").textContent="資料更新日期："+fmt(data.updated_at);
- }catch(e){$("rows").innerHTML='<tr><td colspan="9" class="empty">目前無法讀取資料檔，請稍後重新整理。</td></tr>'}
- const now=records.filter(r=>r.status==="招標中"),closing=now.filter(r=>daysTo(r.deadline)>=0&&daysTo(r.deadline)<=7);
- $("total").textContent=records.length;$("open").textContent=now.length;$("closing").textContent=closing.length;$("verified").textContent=records.filter(r=>r.verification==="已核實").length;
- ["q","status","type"].forEach(id=>$(id).addEventListener(id==="q"?"input":"change",render));render();
-})();
-</script>
-</body>
-</html>
+let all=[];const $=id=>document.getElementById(id);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const dateText=s=>s?esc(s):"未公告";
+function render(){const q=$("q").value.trim().toLowerCase(),h=$("hospital").value,st=$("status").value,v=$("verifiedFilter").value;const rows=all.filter(x=>(!q||[x.hospital,x.title,x.case_no,x.vendor].join(" ").toLowerCase().includes(q))&&(!h||x.hospital===h)&&(!st||x.status===st)&&(!v||String(!!x.verified)===v));$("rows").innerHTML=rows.length?rows.map(x=>'<tr><td>'+dateText(x.announcement_date)+'</td><td>'+esc(x.hospital)+'</td><td><strong>'+esc(x.title)+'</strong><br><span style="color:#718292">'+esc(x.case_no||"案號未公告")+'</span></td><td>'+esc(x.budget||"未公告")+'</td><td>'+esc(x.method||"未公告")+'</td><td>'+dateText(x.deadline)+'</td><td><span class="pill">'+esc(x.status||"待確認")+'</span></td><td><span class="pill '+(x.verified?"ok":"wait")+'">'+(x.verified?"已核實":"待確認")+'</span></td><td>'+(x.source_url?'<a href="'+esc(x.source_url)+'" target="_blank" rel="noopener">查看公告</a>':"尚無連結")+'</td></tr>').join(""):'<tr><td colspan="9" class="empty">目前沒有符合條件的案件</td></tr>'}
+async function init(){try{const r=await fetch("./data/tenders.json",{cache:"no-store"});if(!r.ok)throw Error();const d=await r.json();all=Array.isArray(d.tenders)?d.tenders:[];$("total").textContent=all.length;$("open").textContent=all.filter(x=>x.status==="招標中").length;const now=new Date(),week=new Date(now.getTime()+7*86400000);$("closing").textContent=all.filter(x=>x.deadline&&new Date(x.deadline)>=now&&new Date(x.deadline)<=week).length;$("verified").textContent=all.filter(x=>x.verified===true).length;[...new Set(all.map(x=>x.hospital).filter(Boolean))].sort().forEach(n=>{const o=document.createElement("option");o.value=n;o.textContent=n;$("hospital").append(o)});$("updated").textContent=d.updated_at||"尚無資料";render()}catch(e){$("rows").innerHTML='<tr><td colspan="9" class="empty">無法載入資料，請稍後重試。</td></tr>'}}
+["q","hospital","status","verifiedFilter"].forEach(id=>$(id).addEventListener(id==="q"?"input":"change",render));init();
+</script></body></html>
