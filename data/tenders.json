@@ -1,4 +1,6 @@
 {
-  "updated_at": "尚未匯入經官方查核的案件",
-  "records": []
+  "updated_at": null,
+  "scope": "臺灣部立醫院、公立醫院及醫學中心公開醫療器材採購公告",
+  "verification_policy": "僅以政府電子採購網及醫院官方公告原文、附件核實後標示 verified=true；未核實案件不得當作已確認資訊。",
+  "tenders": []
 }
